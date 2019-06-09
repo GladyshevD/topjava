@@ -15,22 +15,12 @@
             border-top: 2px solid #000;
             border-bottom: 2px solid #000;
         }
-
         TD, TH {
             padding: 3px;
         }
-
         TH {
             text-align: left;
             border-bottom: 1px solid #000;
-        }
-
-        .red {
-            color: red;
-        }
-
-        .green {
-            color: green;
         }
     </style>
     <tr>
@@ -40,13 +30,12 @@
     </tr>
     <jsp:useBean id="listTo" scope="request" type="java.util.List"/>
     <c:forEach items="${listTo}" var="list">
-        <c:set var="exc" value="class = ${list.excess ? 'red' : 'green'}"/>
-        <tr>
-            <td><span ${exc}><fmt:parseDate value="${list.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDateTime"
+        <tr style="color: ${list.excess ? 'red' : 'green'}">
+            <td><fmt:parseDate value="${list.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDateTime"
                                             type="both"/>
-                <fmt:formatDate pattern="dd.MM.yyyy HH:mm" value="${parsedDateTime}"/></span></td>
-            <td><span ${exc}>${list.description}</span></td>
-            <td><span ${exc}>${list.calories}</span></td>
+                <fmt:formatDate pattern="dd.MM.yyyy HH:mm" value="${parsedDateTime}"/></td>
+            <td>${list.description}</td>
+            <td>${list.calories}</td>
         </tr>
     </c:forEach>
 </table>

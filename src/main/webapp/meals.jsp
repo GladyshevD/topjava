@@ -8,34 +8,43 @@
 <body>
 <h4><a href="index.html">Home</a></h4>
 <table>
-    <caption>Meals</caption>
+    <caption><h3>Meals</h3></caption>
     <style type="text/css">
         TABLE {
-            width: 300px;
             border-top: 2px solid #000;
             border-bottom: 2px solid #000;
         }
         TD, TH {
-            padding: 3px;
+            padding: 3px 30px 3px 3px;
         }
         TH {
-            text-align: left;
+            text-align: center;
             border-bottom: 1px solid #000;
         }
     </style>
+    <thead>
     <tr>
+        <th>ID</th>
         <th>Meal Date/Time</th>
         <th>Meal</th>
         <th>Calories</th>
+        <th colspan="2">Action</th>
     </tr>
-    <jsp:useBean id="listTo" scope="request" type="java.util.List"/>
-    <c:forEach items="${listTo}" var="list">
-        <tr style="color: ${list.excess ? 'red' : 'green'}">
-            <td><fmt:parseDate value="${list.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDateTime"
+    </thead>
+    <c:forEach items="${mapTo}" var="map">
+        <tr style="color: ${map.value.excess ? 'red' : 'green'}">
+            <td>${map.key}</td>
+            <td><fmt:parseDate value="${map.value.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDateTime"
                                             type="both"/>
                 <fmt:formatDate pattern="dd.MM.yyyy HH:mm" value="${parsedDateTime}"/></td>
-            <td>${list.description}</td>
-            <td>${list.calories}</td>
+            <td>${map.value.description}</td>
+            <td>${map.value.calories}</td>
+            <td></td>
+            <td>
+                <form action="meals" method="post">
+                    <button type="submit" name="delete" value="${map.key}">Delete</button>
+                </form>
+            </td>
         </tr>
     </c:forEach>
 </table>

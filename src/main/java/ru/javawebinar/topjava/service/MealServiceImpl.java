@@ -4,13 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
-import ru.javawebinar.topjava.web.user.ProfileRestController;
 
-import java.time.LocalTime;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFound;
@@ -20,44 +17,34 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 public class MealServiceImpl implements MealService {
 
     private MealRepository mealRepository;
-    private UserRepository userRepository;
-    private ProfileRestController profile;
 
     @Autowired
-    public MealServiceImpl(MealRepository mealRepository, UserRepository userRepository, ProfileRestController profile) {
+    public MealServiceImpl(MealRepository mealRepository) {
         this.mealRepository = mealRepository;
-        this.userRepository = userRepository;
-        this.profile = profile;
     }
 
     @Override
-    public Meal create(Meal meal) throws NotFoundException {
-        return checkNotFound(mealRepository.save(meal), meal.toString());
+    public Meal create(Meal meal, int userId) throws NotFoundException {
+        return checkNotFound(mealRepository.save(meal, userId), meal.toString());
     }
 
     @Override
-    public void delete(int id) throws NotFoundException {
-        checkNotFoundWithId(checkId(id) ? mealRepository.delete(id) : null, id);
+    public void delete(int id, int userId) throws NotFoundException {
+        checkNotFoundWithId(mealRepository.delete(id, userId), id);
     }
 
     @Override
-    public List<MealTo> getAllByUserId() throws NotFoundException {
-        int userId = profile.get().getId();
-        return MealsUtil.getFilteredWithExcess(mealRepository.getForLoggedUser(userId),
-                userRepository.get(userId).getCaloriesPerDay(), LocalTime.MIN, LocalTime.MAX);
+    public List<MealTo> getAllByUserId(int userId, int calories) throws NotFoundException {
+        return MealsUtil.getWithExcess(mealRepository.getByUserId(userId), calories);
     }
 
     @Override
-    public void update(Meal meal) {
-        checkNotFound(checkId(meal.getId()) ? mealRepository.save(meal) : null, meal.toString());
+    public void update(Meal meal, int userId) {
+        checkNotFound(mealRepository.save(meal, userId), meal.toString());
     }
 
     @Override
-    public Meal get(int id) {
-        return checkNotFoundWithId(checkId(id) ? mealRepository.get(id) : null, id);
-    }
-
-    private boolean checkId(Integer id) {
-        return profile.get().getId().equals(mealRepository.get(id).getId());
+    public Meal get(int id, int userId) {
+        return checkNotFoundWithId(mealRepository.get(id, userId), id);
     }
 }

@@ -5,7 +5,6 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,41 +17,45 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     private AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.MEALS.forEach(this::save);
+        MealsUtil.MEALS.forEach(meal -> save(meal, 0));
     }
 
     @Override
-    public Meal save(Meal meal) {
+    public Meal save(Meal meal, int userId) {
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             repository.put(meal.getId(), meal);
             return meal;
         }
         // treat case: update, but absent in storage
-        return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+        return checkId(meal.getId(), userId) ? repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal) : null;
     }
 
     @Override
-    public boolean delete(int id) {
-        return repository.remove(id) != null;
+    public boolean delete(int id, int userId) {
+        return checkId(id, userId) && repository.remove(id) != null;
     }
 
     @Override
-    public Meal get(int id) {
-        return repository.getOrDefault(id, null);
+    public Meal get(int id, int userId) {
+        return checkId(id, userId) ? repository.getOrDefault(id, null) : null;
     }
 
     @Override
-    public Collection<Meal> getAll() {
-        return repository.values();
+    public List<Meal> getAll() {
+        return (List<Meal>) repository.values();
     }
 
     @Override
-    public List<Meal> getForLoggedUser(int userId) {
+    public List<Meal> getByUserId(int userId) {
         return repository.values().stream()
                 .filter(meal -> meal.getUserId().equals(userId))
                 .sorted((o1, o2) -> o2.getDateTime().compareTo(o1.getDateTime()))
                 .collect(Collectors.toList());
     }
-}
 
+    @Override
+    public boolean checkId(int id, int userId) {
+        return repository.containsKey(id) && userId == repository.get(id).getUserId();
+    }
+}

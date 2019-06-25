@@ -1,5 +1,7 @@
 DELETE FROM user_roles;
 DELETE FROM users;
+DELETE FROM meals;
+
 ALTER SEQUENCE global_seq RESTART WITH 100000;
 
 INSERT INTO users (name, email, password) VALUES
@@ -15,5 +17,5 @@ INSERT INTO meals (description, datetime, calories, user_id) VALUES
 ('Обед', '2019-05-30 13:00', 1000, 100000),
 ('Ужин', '2019-05-30 20:00', 500, 100000),
 ('Завтрак', '2019-05-31 10:00', 1000, 100000),
-('Обед', '2019-05-3 13:001', 500, 100000),
+('Обед', '2019-05-31 13:00', 500, 100000),
 ('Ужин', '2019-05-31 20:00', 510, 100000);

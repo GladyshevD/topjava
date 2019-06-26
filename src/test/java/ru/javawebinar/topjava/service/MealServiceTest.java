@@ -36,14 +36,12 @@ public class MealServiceTest {
 
     @Test (expected = NotFoundException.class)
     public void get() throws NotFoundException {
-        Meal meal = mealService.get(MEAL_ID, 1);
-        assertMatch(meal, MEAL1);
+        mealService.get(MEAL_ID, 1);
     }
 
     @Test (expected = NotFoundException.class)
     public void delete() throws NotFoundException {
         mealService.delete(MEAL_ID, 100010);
-        assertMatch(mealDelete(MEAL_ID), mealService.getAll(100010));
     }
 
     @Test
@@ -71,15 +69,13 @@ public class MealServiceTest {
         Meal updated = new Meal(100002, LocalDateTime.of(2019, Month.MAY, 30, 10, 0),
                 "Завтрак", 500);
         mealService.update(updated, 1);
-        assertMatch(updated, MEAL1);
     }
 
     @Test
     public void create() throws Exception {
-        Meal newMeal = new Meal(null, LocalDateTime.of(2019, Month.MAY, 30, 10, 0),
+        Meal newMeal = new Meal(null, LocalDateTime.of(2019, Month.MAY, 1, 10, 0),
                 "Завтрак", 500);
-        meals.add(newMeal);
-        mealService.create(newMeal, 100000);
-        assertMatch(meals, mealService.getAll(100000));
+        Meal mealCreated = mealService.create(newMeal, 100000);
+        assertMatch(mealService.getAll(100000), mealAdd(mealCreated));
     }
 }

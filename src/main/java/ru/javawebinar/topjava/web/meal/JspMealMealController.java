@@ -47,7 +47,7 @@ public class JspMealMealController extends AbstractMealController {
     public String delete(HttpServletRequest request) {
         int id = getId(request);
         super.delete(id);
-        return "meals";
+        return "redirect:/meals";
     }
 
     @GetMapping("/create")
@@ -69,7 +69,7 @@ public class JspMealMealController extends AbstractMealController {
         LocalTime startTime = parseLocalTime(request.getParameter("startTime"));
         LocalTime endTime = parseLocalTime(request.getParameter("endTime"));
         model.addAttribute("meals", super.getBetween(startDate, startTime, endDate, endTime));
-        return "meals";
+        return "/meals";
     }
 
     private int getId(HttpServletRequest request) {

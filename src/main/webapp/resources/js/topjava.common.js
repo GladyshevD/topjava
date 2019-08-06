@@ -5,7 +5,7 @@ function makeEditable(ctx) {
     form = $('#detailsForm');
     $(".delete").click(function () {
         if (confirm('Are you sure?')) {
-            deleteRow($(this).attr("id"));
+            deleteRow($(this).closest("tr").attr("id"));
         }
     });
 
@@ -48,6 +48,10 @@ function save() {
         updateTable();
         successNoty("Saved");
     });
+}
+
+function filter() {
+
 }
 
 let failedNote;

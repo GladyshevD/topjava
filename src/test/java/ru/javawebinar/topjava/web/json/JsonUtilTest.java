@@ -8,9 +8,6 @@ import ru.javawebinar.topjava.model.User;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static ru.javawebinar.topjava.MealTestData.*;
 
 class JsonUtilTest {
@@ -32,7 +29,7 @@ class JsonUtilTest {
     }
 
     @Test
-    void testWriteOnlyAccess() throws Exception {
+    void writeOnlyAccess() throws Exception {
         String json = JsonUtil.writeValue(UserTestData.USER);
         System.out.println(json);
         assertThat(json, not(containsString("password")));
